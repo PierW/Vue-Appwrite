@@ -3,6 +3,8 @@ import BackButton from '@/components/BackButton.vue';
 import { reactive, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useToast } from "vue-toastification";
+import { databases } from '@/lib/appwrite.js';
+
 
 
 const router = useRouter();
@@ -17,7 +19,8 @@ const form = reactive({
   author: ''
 });
 
-onMounted(async () => {
+// FETCH GET SINGOLO ELEMENTO CON JSON-SERVER
+/* onMounted(async () => {
     try {
         const response = await fetch(`http://localhost:8000/posts/${postId}`);
         const json = await response.json();
@@ -28,9 +31,28 @@ onMounted(async () => {
     } catch (error) {
         console.log(error);
     }
+}); */
+
+// FETCH GET SINGOLO ELEMENTO CON SDK APPWRITE
+onMounted(async () => {
+    try {
+        const response = await databases.getDocument(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_COLLECTION_ID,
+            postId                  // ID del documento
+        );
+        // Popola lo stato e il form con i dati del post
+        Object.assign(state, response);
+        form.title = state.title;
+        form.author = state.author;
+    } catch (error) {
+        console.log(error);
+    }
 });
 
-const updatePost = async () => {
+
+// FETCH EDIT CON JSON-SERVER
+/* const updatePost = async () => {
   try {
     const response = await fetch(`http://localhost:8000/posts/${postId}`, {
       method: 'PUT',
@@ -46,6 +68,27 @@ const updatePost = async () => {
       throw new Error('Errore nella modifica del post');
     }
     toast.success("Post modificato con successo!")
+    form.title = '';
+    form.author = '';
+    router.push({ name: 'home' });
+  } catch (error) {
+    toast.error("Errore nella modifica del post!");
+    console.log(error);
+  }
+} */
+
+const updatePost = async () => {
+  try {
+    await databases.updateDocument(
+      import.meta.env.VITE_APPWRITE_DATABASE_ID,
+      import.meta.env.VITE_APPWRITE_COLLECTION_ID,
+      postId,                 // ID del documento
+      {
+        title: form.title,
+        author: form.author
+      }
+    );
+    toast.success("Post modificato con successo!");
     form.title = '';
     form.author = '';
     router.push({ name: 'home' });

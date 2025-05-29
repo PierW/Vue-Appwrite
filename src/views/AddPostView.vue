@@ -2,6 +2,7 @@
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from "vue-toastification";
+import { databases, ID } from '@/lib/appwrite.js';
 
 const router = useRouter();
 const toast = useToast();
@@ -10,7 +11,8 @@ const form = reactive({
   author: ''
 });
 
-const createPost = async () => {
+// CREATE CON LIVE-SERVER
+/* const createPost = async () => {
   try {
     const response = await fetch('http://localhost:8000/posts', {
       method: 'POST',
@@ -25,6 +27,28 @@ const createPost = async () => {
     if (!response.ok) {
       throw new Error('Errore nella creazione del post');
     }
+    toast.success("Post creato con successo!")
+    form.title = '';
+    form.author = '';
+    router.push({ name: 'home' });
+  } catch (error) {
+    toast.error("Errore nella creazione del post!");
+    console.log(error);
+  }
+} */
+
+// CREATE CON APPWRITE
+const createPost = async () => {
+  try {
+    await databases.createDocument(
+      import.meta.env.VITE_APPWRITE_DATABASE_ID,
+      import.meta.env.VITE_APPWRITE_COLLECTION_ID,
+      ID.unique(),
+      { 
+        title: form.title,
+        author: form.author
+      }
+    );
     toast.success("Post creato con successo!")
     form.title = '';
     form.author = '';
