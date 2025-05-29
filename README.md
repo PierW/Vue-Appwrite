@@ -1,29 +1,19 @@
-# vue-demo
+# VUE TODO APP
 
-This template should help get you started developing with Vue 3 in Vite.
+SPA realizzata con Vue 3 in Composition Api e Vue Router + Pico Css + Json Server
+## Descrizione
+Creata app Todo list con tutte le CRUD operation. Usato Pico Css per concentrarci esclusivamente su Vue e Vue Router e Json Server (sul main) mentre usato SDK di Appwrite come DB NoSql (su branch appwrite).
 
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
+## Installazione
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
-
 ```sh
 npm run dev
 ```
-
-### Compile and Minify for Production
-
 ```sh
-npm run build
+npm run server
 ```
+
