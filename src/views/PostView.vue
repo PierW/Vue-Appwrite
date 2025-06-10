@@ -4,12 +4,14 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useToast } from "vue-toastification";
 import { databases } from '@/lib/appwrite.js';
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 
 const route = useRoute();
 const router = useRouter();
 const toast = useToast();
 const postId = route.params.id;
 const post = ref({});
+const isLoading = ref(true);
 
 
 // FETCH JSON-SERVER SINGOLO TASK
@@ -34,6 +36,8 @@ onMounted(async () => {
     post.value = response;
   } catch (error) {
     console.log(error);
+  } finally {
+    isLoading.value = false;
   }
 });
 
@@ -86,6 +90,12 @@ const updatePost = () => {
 <template>
     <main class="container">
         <BackButton />
+        <div v-if="isLoading" class="text-center">
+            <PulseLoader color="gray"/>
+        </div>
+        <div v-else-if="!isLoading && !post.$id">
+          Post non trovato.
+        </div>
         <div v-if="post.$id">
             <div>
                 <strong>Id:</strong>
@@ -99,10 +109,10 @@ const updatePost = () => {
                 <strong>Autore:</strong>
                 {{ post.author }}
             </div>
-        </div>
-        <div class="grid">
-            <button class="secondary" @click="deletePost">Elimina Post</button>
-            <button class="contrast" @click="updatePost">Modifica Post</button>
+            <div class="grid">
+                <button class="secondary" @click="deletePost">Elimina Post</button>
+                <button class="contrast" @click="updatePost">Modifica Post</button>
+            </div>
         </div>
     </main>
 </template>

@@ -1,10 +1,16 @@
 <script setup>
-import { ref, onMounted} from 'vue'
+import { reactive, onMounted} from 'vue'
 import { RouterLink } from 'vue-router';
 import { databases } from '@/lib/appwrite.js';
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 
 
-const posts = ref([]);
+//const posts = ref([]);
+
+const state = reactive({
+  posts: [],
+  isLoading: true
+});
 
 // FETCH CON LIVE-SERVER
 /* onMounted(async () => {
@@ -24,17 +30,22 @@ onMounted(async () => {
       import.meta.env.VITE_APPWRITE_DATABASE_ID,
       import.meta.env.VITE_APPWRITE_COLLECTION_ID
     );
-    posts.value = response.documents;
+    state.posts = response.documents;
   } catch (error) {
     console.log(error);
+  } finally {
+    state.isLoading = false;
   }
 });
 
 </script>
 
 <template>
-  <main class="container"> 
-    <div v-for="post in posts" :key="post.$id">
+  <main class="container">
+    <div v-if="state.isLoading" class="text-center">
+      <PulseLoader color="gray"/>
+    </div>
+    <div v-for="post in state.posts" :key="post.$id">
       <article>
         <RouterLink :to="`/posts/${post.$id}`" :post>
           {{ post.title }}
